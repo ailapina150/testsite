@@ -145,7 +145,7 @@ form.addEventListener('submit', async (e) => {
 
     try {
         // --- 7.4. Отправка на Cloudflare Functions ---
-        const response = await fetch('/api/submit', {
+        const response = await fetch('https://testsite-api.smart-flow.workers.dev/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

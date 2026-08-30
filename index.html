@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Assistant — Нейросеть для бизнеса</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <!-- ====== ЭКРАН 1: HERO ====== -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <!-- Логотип / навигация -->
+            <nav class="navbar">
+                <div class="logo">
+                    <span class="logo-icon">🧠</span>
+                    <span class="logo-text">AI<span class="logo-accent">Assist</span></span>
+                </div>
+                <a href="#form" class="nav-cta">Начать</a>
+            </nav>
+
+            <!-- Основной контент -->
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <div class="badge">🚀 AI для бизнеса</div>
+                    <h1 class="hero-title">
+                        Нейросеть, которая
+                        <span class="gradient-text">работает</span> на вас
+                    </h1>
+                    <p class="hero-description">
+                        Автоматизируйте рутину, увеличивайте продажи
+                        и принимайте решения на основе данных с помощью
+                        нашего AI-ассистента.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#form" class="btn btn-primary">
+                            Попробовать бесплатно
+                            <span class="btn-arrow">→</span>
+                        </a>
+                        <a href="#form" class="btn btn-outline">
+                            Узнать больше
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">10k+</span>
+                            <span class="stat-label">Активных пользователей</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">99.9%</span>
+                            <span class="stat-label">Точность анализа</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Поддержка AI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="ai-illustration">
+                        <!-- Если есть картинка - раскомментировать -->
+                        <!-- <img src="images/ai-illustration.svg" alt="AI Illustration" /> -->
+                        <div class="ai-placeholder">
+                            <div class="ai-sphere"></div>
+                            <div class="ai-orbits">
+                                <span class="orbit orbit-1"></span>
+                                <span class="orbit orbit-2"></span>
+                                <span class="orbit orbit-3"></span>
+                            </div>
+                            <div class="ai-label">🧠 AI</div>
+                        </div>
+                    </div>
+                    <div class="floating-card card-1">📊 Анализ данных</div>
+                    <div class="floating-card card-2">🤖 Автоматизация</div>
+                    <div class="floating-card card-3">💡 Инсайты</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Скролл-индикатор -->
+        <div class="scroll-indicator">
+            <span class="scroll-text">Листайте вниз</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- ====== ЭКРАН 2: ФОРМА ====== -->
+    <section class="form-section" id="form">
+        <div class="container">
+            <div class="form-grid">
+                <!-- Левая часть - преимущества -->
+                <div class="form-info">
+                    <span class="badge">🚀 Начните прямо сейчас</span>
+                    <h2 class="form-title">
+                        Получите <span class="gradient-text">бесплатную</span>
+                        консультацию AI-эксперта
+                    </h2>
+                    <p class="form-description">
+                        Оставьте заявку, и наш AI-ассистент проанализирует
+                        ваш бизнес и предложит решения для роста.
+                    </p>
+
+                    <div class="advantages">
+                        <div class="advantage">
+                            <div class="advantage-icon">🧠</div>
+                            <div>
+                                <h4>Индивидуальный подход</h4>
+                                <p>AI анализирует именно ваш бизнес</p>
+                            </div>
+                        </div>
+                        <div class="advantage">
+                            <div class="advantage-icon">⚡</div>
+                            <div>
+                                <h4>Быстрый результат</h4>
+                                <p>Первые инсайты через 24 часа</p>
+                            </div>
+                        </div>
+                        <div class="advantage">
+                            <div class="advantage-icon">🔒</div>
+                            <div>
+                                <h4>Безопасность данных</h4>
+                                <p>Все данные шифруются и не передаются</p>
+                            </div>
+                        </div>
+                        <div class="advantage">
+                            <div class="advantage-icon">💬</div>
+                            <div>
+                                <h4>Поддержка 24/7</h4>
+                                <p>Наш AI всегда готов помочь</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая часть - форма -->
+                <div class="form-wrapper">
+                    <form class="contact-form" id="contactForm">
+                        <h3 class="form-subtitle">Оставьте заявку</h3>
+
+                        <div class="form-group">
+                            <label for="name">Ваше имя</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="Иван Иванов"
+                                required
+                            />
+                            <span class="error-message" id="nameError">
+                                Пожалуйста, введите ваше имя
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Номер телефона</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="+7 (999) 999-99-99"
+                                required
+                            />
+                            <span class="error-message" id="phoneError">
+                                Пожалуйста, введите корректный номер
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email (опционально)</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="ivan@example.com"
+                            />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <span id="submitText">Отправить заявку</span>
+                            <span id="submitSpinner" class="spinner hidden"></span>
+                        </button>
+
+                        <p class="form-agreement">
+                            Нажимая кнопку, вы соглашаетесь с
+                            <a href="#">политикой конфиденциальности</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 AIAssist. Все права защищены.</p>
+            <p>Разработано с ❤️ для тестового задания</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

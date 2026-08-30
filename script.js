@@ -157,8 +157,9 @@ form.addEventListener('submit', async (e) => {
 
         // --- 7.5. Обработка ответа ---
         if (result.success) {
-            // ✅ Успех — перенаправляем в Telegram-бота, который благодарит за регистрацию
-            window.location.href = 'https://t.me/AIMaster99Bot';
+            // ✅ Успех — перенаправляем в Telegram
+            // ВАЖНО: Замени на username своего бота
+            window.location.href = 'https://t.me/AIMasterBot';
         } else {
             // ❌ Ошибка от сервера
             alert('Ошибка: ' + (result.error || 'Неизвестная ошибка'));

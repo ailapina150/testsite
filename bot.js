@@ -62,7 +62,7 @@ bot.onText(/\/start/, (msg) => {
                     { text: '📊 О сервисе', callback_data: 'about' }
                 ],
                 [
-                    { text: '🌐 Перейти на сайт', url: 'https://testsite.pages.dev' } // ← ЗАМЕНИ НА СВОЙ URL
+                    { text: '🌐 Перейти на сайт', url: 'https://testsite.smart-flow.workers.dev/' }
                 ]
             ]
         }
@@ -114,7 +114,7 @@ bot.on('callback_query', (callbackQuery) => {
                     reply_markup: {
                         inline_keyboard: [
                             [
-                                { text: '🌐 Перейти на сайт', url: 'https://testsite.pages.dev' } // ← ЗАМЕНИ
+                                { text: '🌐 Перейти на сайт', url: 'https://testsite.smart-flow.workers.dev/' }
                             ]
                         ]
                     }
@@ -165,7 +165,7 @@ bot.on('message', (msg) => {
                     inline_keyboard: [
                         [
                             { text: '📊 О сервисе', callback_data: 'about' },
-                            { text: '🌐 На сайт', url: 'https://testsite.pages.dev' } // ← ЗАМЕНИ
+                            { text: '🌐 На сайт', url: 'https://testsite.smart-flow.workers.dev/' }
                         ]
                     ]
                 }

@@ -144,32 +144,27 @@ form.addEventListener('submit', async (e) => {
     };
 
     try {
-        // --- 7.4. Отправка на отдельный Worker ---
-        // ✅ ПРАВИЛЬНЫЙ URL с /api/submit
-        const response = await fetch('https://testsite-api.smart-flow.workers.dev/api/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+        // --- 7.4. Отправка через EmailJS ---
+        const response = await emailjs.send(
+            'service_w4qjvgq',      // Service ID
+            'template_52hylde',     // Template ID
+            {
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email
             },
-            body: JSON.stringify(formData)
-        });
+            {
+                publicKey: '1MiEaYnhZYYpgL6fB'  // Public Key
+            }
+        );
 
         // --- 7.5. Проверка ответа ---
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ Ошибка сервера:', response.status, errorText);
-            throw new Error(`Сервер вернул ошибку ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        // --- 7.6. Обработка результата ---
-        if (result.success) {
+        if (response.status === 200) {
             // ✅ Успех — перенаправляем в Telegram
             window.location.href = 'https://t.me/AIMasterBot';
         } else {
             // ❌ Ошибка от сервера
-            alert('❌ Ошибка: ' + (result.error || 'Неизвестная ошибка'));
+            alert('❌ Ошибка: ' + (response.text || 'Неизвестная ошибка'));
         }
     } catch (error) {
         // ❌ Сетевая ошибка
@@ -235,9 +230,8 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.fade-in').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
     observer.observe(el);
 });
 
 console.log('🚀 AI Assistant лендинг загружен!');
-console.log('📌 Отправка на: https://testsite-api.smart-flow.workers.dev/api/submit');
+console.log('📌 Отправка через EmailJS (service_w4qjvgq / template_52hylde)');

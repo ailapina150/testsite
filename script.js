@@ -16,15 +16,15 @@ const submitSpinner = document.getElementById('submitSpinner');
 // ============================================================
 phoneInput.addEventListener('input', function (e) {
     let value = this.value.replace(/\D/g, '');
-    
+
     if (value.length > 0) {
         // Убираем 7 или 8 в начале, если есть
         if (value.startsWith('7') || value.startsWith('8')) {
             value = value.slice(1);
         }
-        
+
         let formatted = '+7 ';
-        
+
         if (value.length > 0) {
             formatted += '(' + value.slice(0, 3);
         }
@@ -37,7 +37,7 @@ phoneInput.addEventListener('input', function (e) {
         if (value.length > 8) {
             formatted += '-' + value.slice(8, 10);
         }
-        
+
         this.value = formatted;
     } else {
         this.value = '';
@@ -118,13 +118,13 @@ form.addEventListener('submit', async (e) => {
     // --- 7.1. Финальная валидация ---
     const isNameValid = validateName(nameInput.value);
     const isPhoneValid = validatePhone(phoneInput.value);
-    
+
     if (!isNameValid) {
         showError(nameInput, nameError);
         nameInput.focus();
         return;
     }
-    
+
     if (!isPhoneValid) {
         showError(phoneInput, phoneError);
         phoneInput.focus();
@@ -144,8 +144,9 @@ form.addEventListener('submit', async (e) => {
     };
 
     try {
-        // --- 7.4. Отправка на Cloudflare Functions ---
-        const response = await fetch('https://testsite-api.smart-flow.workers.dev/', {
+        // --- 7.4. Отправка на отдельный Worker ---
+        // ✅ ПРАВИЛЬНЫЙ URL с /api/submit
+        const response = await fetch('https://testsite-api.smart-flow.workers.dev/api/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -153,23 +154,29 @@ form.addEventListener('submit', async (e) => {
             body: JSON.stringify(formData)
         });
 
+        // --- 7.5. Проверка ответа ---
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Ошибка сервера:', response.status, errorText);
+            throw new Error(`Сервер вернул ошибку ${response.status}`);
+        }
+
         const result = await response.json();
 
-        // --- 7.5. Обработка ответа ---
+        // --- 7.6. Обработка результата ---
         if (result.success) {
             // ✅ Успех — перенаправляем в Telegram
-            // ВАЖНО: Замени на username своего бота
             window.location.href = 'https://t.me/AIMasterBot';
         } else {
             // ❌ Ошибка от сервера
-            alert('Ошибка: ' + (result.error || 'Неизвестная ошибка'));
+            alert('❌ Ошибка: ' + (result.error || 'Неизвестная ошибка'));
         }
     } catch (error) {
         // ❌ Сетевая ошибка
-        console.error('Ошибка отправки:', error);
-        alert('Не удалось отправить заявку. Проверьте интернет-соединение и попробуйте снова.');
+        console.error('❌ Ошибка отправки:', error);
+        alert('❌ Не удалось отправить заявку. Проверьте интернет-соединение и попробуйте снова.');
     } finally {
-        // --- 7.6. Разблокируем кнопку ---
+        // --- 7.7. Разблокируем кнопку ---
         submitBtn.disabled = false;
         submitText.textContent = 'Отправить заявку';
         submitSpinner.classList.add('hidden');
@@ -183,7 +190,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
         const inputs = ['name', 'phone', 'email'];
         const currentIndex = inputs.indexOf(e.target.id);
-        
+
         if (currentIndex !== -1 && currentIndex < inputs.length - 1) {
             // Переход к следующему полю
             const nextInput = document.getElementById(inputs[currentIndex + 1]);
@@ -209,9 +216,8 @@ document.querySelectorAll('a[href="#form"]').forEach(link => {
 });
 
 // ============================================================
-// 10. АНИМАЦИЯ ПОЯВЛЕНИЯ ЭЛЕМЕНТОВ ПРИ СКРОЛЛЕ (опционально)
+// 10. АНИМАЦИЯ ПОЯВЛЕНИЯ ЭЛЕМЕНТОВ ПРИ СКРОЛЛЕ
 // ============================================================
-// Используем Intersection Observer для анимации появления
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -226,7 +232,6 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Наблюдаем за элементами с классом 'fade-in' (можно добавить в HTML)
 document.querySelectorAll('.fade-in').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
@@ -235,3 +240,4 @@ document.querySelectorAll('.fade-in').forEach(el => {
 });
 
 console.log('🚀 AI Assistant лендинг загружен!');
+console.log('📌 Отправка на: https://testsite-api.smart-flow.workers.dev/api/submit');

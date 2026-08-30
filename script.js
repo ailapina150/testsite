@@ -161,7 +161,7 @@ form.addEventListener('submit', async (e) => {
         // --- 7.5. Проверка ответа ---
         if (response.status === 200) {
             // ✅ Успех — перенаправляем в Telegram
-            window.location.href = 'https://t.me/AIMasterBot';
+            window.location.href = 'https://t.me/AIMaster99Bot';
         } else {
             // ❌ Ошибка от сервера
             alert('❌ Ошибка: ' + (response.text || 'Неизвестная ошибка'));

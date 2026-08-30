@@ -41,10 +41,7 @@ export default {
                 const RESEND_API_KEY = env.RESEND_API_KEY;
                 const siteUrl = 'https://testsite.pages.dev';
 
-                if (!RESEND_API_KEY) {
-                    console.error('❌ RESEND_API_KEY не настроен');
-                } else {
-                    // Формируем HTML-письмо для красивого отображения
+                if (RESEND_API_KEY) {
                     const htmlContent = `
                         <h2>Новая заявка с сайта</h2>
                         <p><strong>Сайт:</strong> <a href="${siteUrl}">${siteUrl}</a></p>
@@ -66,33 +63,27 @@ export default {
                         Email: ${email || 'Не указан'}
                     `;
 
-                    const response = await fetch('https://api.resend.com/emails', {
+                    await fetch('https://api.resend.com/emails', {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${RESEND_API_KEY}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            from: 'onboarding@resend.dev',  // Бесплатный отправитель
-                            to: ['superhumansmm@yandex.ru'], // ← ЛЮБОЙ EMAIL
+                            from: 'onboarding@resend.dev',
+                            to: ['superhumansmm@yandex.ru'],
                             subject: `Новая заявка с сайта ${siteUrl}`,
                             html: htmlContent,
                             text: textContent,
                             reply_to: email || undefined
                         })
                     });
-
-                    const result = await response.json();
-
-                    if (!response.ok) {
-                        console.error('❌ Resend ошибка:', result);
-                    } else {
-                        console.log('✅ Письмо отправлено через Resend:', result.id);
-                    }
+                } else {
+                    console.error('❌ RESEND_API_KEY не настроен');
                 }
 
                 // ============================================================
-                // 2. ОТПРАВКА В TELEGRAM (опционально, если есть токен)
+                // 2. ОТПРАВКА В TELEGRAM (опционально)
                 // ============================================================
                 const token = env.TELEGRAM_BOT_TOKEN;
                 const chatId = env.TELEGRAM_CHAT_ID;

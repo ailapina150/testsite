@@ -159,7 +159,7 @@ form.addEventListener('submit', async (e) => {
         if (result.success) {
             // ✅ Успех — перенаправляем в Telegram
             // ВАЖНО: Замени на username своего бота
-            window.location.href = 'https://t.me/ваш_бот_username';
+            window.location.href = 'https://t.me/AIMasterBot';
         } else {
             // ❌ Ошибка от сервера
             alert('Ошибка: ' + (result.error || 'Неизвестная ошибка'));

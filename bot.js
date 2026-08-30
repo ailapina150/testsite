@@ -1,32 +1,44 @@
 // ============================================================
 // TELEGRAM БОТ ДЛЯ AI ASSISTANT
+// Версия: 2.0
 // Запуск: node bot.js
 // ============================================================
 
 const TelegramBot = require('node-telegram-bot-api');
+require('dotenv').config();
 
 // ============================================================
 // 1. КОНФИГУРАЦИЯ
 // ============================================================
-// ⚠️ ВАЖНО: Токен должен быть в переменных окружения!
-// Для локальной разработки можно использовать .env файл
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN || 'ВАШ_ТОКЕН_БОТА';
+// Токен берется из переменных окружения (безопасно!)
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
-// Создаем экземпляр бота с включенным polling (опрос)
-const bot = new TelegramBot(TOKEN, { polling: true });
+if (!TOKEN) {
+    console.error('❌ ОШИБКА: TELEGRAM_BOT_TOKEN не найден в .env файле!');
+    console.error('📝 Создай файл .env и добавь: TELEGRAM_BOT_TOKEN=твой_токен');
+    process.exit(1);
+}
+
+// Создаем экземпляр бота с включенным polling
+const bot = new TelegramBot(TOKEN, {
+    polling: true,
+    // Опционально: настройки для больших нагрузок
+    // polling: { timeout: 30 }
+});
 
 console.log('🤖 Бот запущен и слушает команды...');
+console.log(`📌 Имя бота: @${bot.options.username || 'неизвестно'}`);
 
 // ============================================================
-// 2. КОМАНДА /start — ПРИВЕТСТВИЕ
+// 2. КОМАНДА /start — ПРИВЕТСТВИЕ ПОСЛЕ РЕГИСТРАЦИИ
 // ============================================================
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
     const firstName = msg.from.first_name || 'пользователь';
+    const username = msg.from.username ? `@${msg.from.username}` : '';
 
-    bot.sendMessage(
-        chatId,
-        `🌟 Добро пожаловать в AI Assistant, ${firstName}! 🎉
+    // Формируем персонализированное приветствие
+    const greeting = `🌟 Добро пожаловать в AI Assistant, ${firstName}! 🎉
 
 Спасибо за регистрацию на нашем сайте! 
 Ваша заявка принята, и наш AI-эксперт уже анализирует ваш бизнес.
@@ -38,23 +50,26 @@ bot.onText(/\/start/, (msg) => {
 • Узнать больше о наших решениях
 • Получить бесплатный демо-доступ
 
-Спасибо, что выбрали нас! 🚀
-`,
-        {
-            parse_mode: 'Markdown',
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: '💬 Задать вопрос', callback_data: 'ask_question' },
-                        { text: '📊 О сервисе', callback_data: 'about' }
-                    ],
-                    [
-                        { text: '🌐 Перейти на сайт', url: 'https://ваш-сайт.pages.dev' }
-                    ]
+Спасибо, что выбрали нас! 🚀`;
+
+    // Отправляем приветствие с кнопками
+    bot.sendMessage(chatId, greeting, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    { text: '💬 Задать вопрос', callback_data: 'ask_question' },
+                    { text: '📊 О сервисе', callback_data: 'about' }
+                ],
+                [
+                    { text: '🌐 Перейти на сайт', url: 'https://testsite.pages.dev' } // ← ЗАМЕНИ НА СВОЙ URL
                 ]
-            }
+            ]
         }
-    );
+    });
+
+    // Лог для отладки
+    console.log(`✅ Приветствие отправлено пользователю ${firstName} (${username || chatId})`);
 });
 
 // ============================================================
@@ -64,15 +79,16 @@ bot.on('callback_query', (callbackQuery) => {
     const message = callbackQuery.message;
     const chatId = message.chat.id;
     const data = callbackQuery.data;
+    const firstName = callbackQuery.from.first_name || 'пользователь';
 
-    // Отвечаем на нажатие кнопки (чтобы убрать "часики")
+    // Отвечаем на нажатие кнопки (убираем "часики")
     bot.answerCallbackQuery(callbackQuery.id);
 
     switch (data) {
         case 'ask_question':
             bot.sendMessage(
                 chatId,
-                `💬 *Задайте ваш вопрос AI-ассистенту*
+                `💬 *Задайте ваш вопрос AI-ассистенту, ${firstName}!*
 
 Напишите ваш вопрос в следующем сообщении, и я постараюсь помочь!
 
@@ -98,7 +114,7 @@ bot.on('callback_query', (callbackQuery) => {
                     reply_markup: {
                         inline_keyboard: [
                             [
-                                { text: '🌐 Перейти на сайт', url: 'https://ваш-сайт.pages.dev' }
+                                { text: '🌐 Перейти на сайт', url: 'https://testsite.pages.dev' } // ← ЗАМЕНИ
                             ]
                         ]
                     }
@@ -109,42 +125,75 @@ bot.on('callback_query', (callbackQuery) => {
         default:
             bot.sendMessage(chatId, '⚠️ Неизвестная команда. Попробуйте /start');
     }
+
+    console.log(`🔄 Обработана кнопка "${data}" для пользователя ${firstName}`);
 });
 
 // ============================================================
-// 4. ОБРАБОТКА ТЕКСТОВЫХ СООБЩЕНИЙ (после вопроса)
+// 4. ОБРАБОТКА ТЕКСТОВЫХ СООБЩЕНИЙ (НЕ КОМАНД)
 // ============================================================
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
+    const firstName = msg.from.first_name || 'пользователь';
 
     // Игнорируем команды (они уже обработаны выше)
     if (text && text.startsWith('/')) {
         return;
     }
 
-    // Если пользователь что-то написал (не команду)
-    // Можно добавить простой ответ или переадресацию
-    if (text) {
+    // Игнорируем пустые сообщения
+    if (!text) {
+        return;
+    }
+
+    // Проверяем, не является ли это ответом на вопрос
+    // (простая эвристика: если сообщение длинное или содержит вопросительный знак)
+    const isQuestion = text.length > 20 || text.includes('?') || text.includes('?');
+
+    if (isQuestion) {
         bot.sendMessage(
             chatId,
-            `✅ Спасибо за ваш вопрос!
+            `✅ *Спасибо за ваш вопрос, ${firstName}!*
 
 Я передал его нашему AI-ассистенту. Обычно ответ приходит в течение нескольких минут.
 
 А пока можете посмотреть информацию о сервисе:`,
             {
+                parse_mode: 'Markdown',
                 reply_markup: {
                     inline_keyboard: [
                         [
                             { text: '📊 О сервисе', callback_data: 'about' },
-                            { text: '🌐 На сайт', url: 'https://ваш-сайт.pages.dev' }
+                            { text: '🌐 На сайт', url: 'https://testsite.pages.dev' } // ← ЗАМЕНИ
+                        ]
+                    ]
+                }
+            }
+        );
+    } else {
+        // Короткое сообщение — просто отвечаем
+        bot.sendMessage(
+            chatId,
+            `👋 Привет, ${firstName}! 
+
+Я AI-ассистент. Если у вас есть вопрос — просто напишите его, и я помогу!
+
+Или воспользуйтесь кнопкой "Задать вопрос" ниже.`,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            { text: '💬 Задать вопрос', callback_data: 'ask_question' },
+                            { text: '📊 О сервисе', callback_data: 'about' }
                         ]
                     ]
                 }
             }
         );
     }
+
+    console.log(`💬 Получено сообщение от ${firstName}: "${text.substring(0, 50)}..."`);
 });
 
 // ============================================================
@@ -152,6 +201,9 @@ bot.on('message', (msg) => {
 // ============================================================
 bot.on('polling_error', (error) => {
     console.error('❌ Ошибка polling:', error.message);
+    if (error.message.includes('ETIMEDOUT')) {
+        console.log('🔄 Переподключение...');
+    }
 });
 
 bot.on('error', (error) => {
@@ -159,11 +211,23 @@ bot.on('error', (error) => {
 });
 
 // ============================================================
-// 6. ПРИВЕТСТВИЕ В КОНСОЛИ ПРИ ЗАПУСКЕ
+// 6. ОБРАБОТКА ЗАВЕРШЕНИЯ ПРОЦЕССА
+// ============================================================
+process.on('SIGINT', () => {
+    console.log('\n🛑 Бот остановлен (Ctrl+C)');
+    process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+    console.log('\n🛑 Бот остановлен (SIGTERM)');
+    process.exit(0);
+});
+
+// ============================================================
+// 7. ИНФОРМАЦИЯ ПРИ ЗАПУСКЕ
 // ============================================================
 console.log(`
 ✅ Бот успешно запущен!
-📌 Имя: @AIMasterBot
 📌 Команды: /start - приветствие
 📌 Статус: Ожидание сообщений...
 
